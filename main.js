@@ -8,6 +8,9 @@ import {
 
 const canvas = document.querySelector("canvas");
 const context = canvas.getContext("2d");
+const $current_score = document.querySelector("#current_score");
+const $top_score = document.querySelector("#top_score");
+$top_score.innerText = getTopScore();
 
 const board = Array(BOARD_HEIGHT)
   .fill()
@@ -22,6 +25,10 @@ let level = 0;
 canvas.width = BLOCK_SIZE * BOARD_WIDTH;
 canvas.height = BLOCK_SIZE * BOARD_HEIGHT;
 context.scale(BLOCK_SIZE, BLOCK_SIZE);
+
+function getTopScore() {
+  return localStorage.getItem("top_score") || 0;
+}
 
 function moveLeft() {
   const newX = piece.position.x - 1;
@@ -54,7 +61,7 @@ function moveDown(increaseScore) {
 function instantDrop() {
   let collision = false;
   while (!collision) {
-    collision = moveDown();
+    collision = moveDown(true);
   }
 }
 
@@ -86,8 +93,6 @@ function removeRows() {
     default:
       break;
   }
-  // TODO: scoreboard
-  console.log(score);
 }
 
 function detectCollision({ newY = false, newX = false, newShape = false }) {
@@ -131,6 +136,11 @@ function resetPiece() {
 }
 
 function resetGame() {
+  const topScore = Number(getTopScore());
+  if (score > topScore) {
+    localStorage.setItem("top_score", score);
+    $top_score.innerText = score;
+  }
   score = 0;
   linesCleared = 0;
   level = 0;
@@ -182,10 +192,9 @@ let counter = 0;
 function update() {
   draw();
   counter++;
-
+  $current_score.innerText = score;
   if (counter === 100) {
     moveDown();
-
     counter = 0;
   }
   window.requestAnimationFrame(update);

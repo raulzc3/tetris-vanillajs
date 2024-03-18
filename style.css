@@ -18,9 +18,19 @@ body {
   display: grid;
   place-items: center;
   max-width: 100%;
-  min-height: 100vh;
+  min-height: 95vh;
+}
+
+#app {
+  display: grid;
+  grid-template-columns: auto auto auto;
+}
+
+.icon__spacebar {
+  height: 1rem;
 }
 
 canvas {
   background-color: black;
+  margin: 0 3rem;
 }
