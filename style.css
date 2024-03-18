@@ -5,6 +5,8 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
+  background-image: url("public/background.webp");
+  background-size: auto;
   background-color: #0000;
 
   font-synthesis: none;
@@ -15,15 +17,21 @@
 }
 
 body {
-  display: grid;
-  place-items: center;
+  display: flex;
+  margin: 0;
+  justify-content: center;
+  align-items: center;
   max-width: 100%;
-  min-height: 95vh;
+  min-height: 100vh;
+  overflow-y: hidden;
 }
 
 #app {
-  display: grid;
-  grid-template-columns: auto auto auto;
+  display: flex;
+  justify-content: space-evenly;
+  padding: 3rem;
+  min-width: 750px;
+  backdrop-filter: grayscale(0.65) blur(10px);
 }
 
 section#game {
