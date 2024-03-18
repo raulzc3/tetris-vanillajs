@@ -28,13 +28,21 @@
         </li>
       </ul>
     </section>
-    <canvas>
-      Tu navegador no admite el elemento &lt;canvas&gt;.
-    </canvas>
+    <section id="game">
+      <div id="modal">
+        <h1 id="modal__title">Welcome!</h1>
+        <button id="modal__button" type="button">
+          New game
+        </button>
+      </div>
+      <canvas>
+        Tu navegador no admite el elemento &lt;canvas&gt;.
+      </canvas>
+    </section>
     <section id="scoreboard">
       <h1>Scoreboard</h1>
-      <h3>Top: <span id="top_score"></span></h3>
-      <h3>Current: <span id="current_score"></span></h3>
+      <h3>Top: <span id="top_score">0</span></h3>
+      <h3>Current: <span id="current_score">0</span></h3>
 
   </main>
   <script type="module" src="/main.js"></script>
