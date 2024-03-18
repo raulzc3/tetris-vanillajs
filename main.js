@@ -148,6 +148,7 @@ function solidifyPiece() {
 }
 
 function newPiece() {
+  //TODO: next piece section
   const newShape = PIECES[Math.floor(Math.random() * 7)];
   const newX = Math.ceil(BOARD_WIDTH / 2 - newShape[0].length / 2);
   const newY = 0;
