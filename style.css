@@ -2,7 +2,7 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
+  user-select: none;
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-image: url("public/background.webp");
@@ -16,8 +16,18 @@
   box-sizing: border-box;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+
 body {
   display: flex;
+  flex-direction: column;
   margin: 0;
   justify-content: center;
   align-items: center;
@@ -26,19 +36,23 @@ body {
   overflow-y: hidden;
 }
 
+#controls {
+  display: none;
+}
+
 #app {
   display: flex;
   justify-content: space-evenly;
-  padding: 3rem;
-  min-width: 750px;
+  padding: 3em;
+  max-width: 750px;
   backdrop-filter: grayscale(0.65) blur(10px);
+  gap: 3em;
 }
 
 section#game {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0 3rem;
 }
 
 section#game #modal {
@@ -46,7 +60,11 @@ section#game #modal {
   position: absolute;
   display: flex;
   flex-direction: column;
-  padding: 0 4rem 2rem 4rem;
+  padding: 3em 1em;
+  font-size: 1.5em;
+}
+section#game button {
+  padding: 1em;
 }
 
 .icon__spacebar {
@@ -55,4 +73,98 @@ section#game #modal {
 
 canvas {
   background-color: black;
+}
+
+@media only screen and (max-width: 600px) {
+  :root {
+    font-size: 0.8rem;
+  }
+
+  body {
+    justify-content: start;
+  }
+
+  #help {
+    display: none;
+  }
+
+  section#game #modal {
+    background-color: black;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    padding: 4em 2em;
+    font-size: 1.5em;
+  }
+  section#game button {
+    padding: 1em;
+  }
+
+  #app {
+    gap: 2em;
+  }
+
+  #controls {
+    display: flex;
+    min-width: 300px;
+    width: 90%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #controls #cross {
+    display: flex;
+    width: 50%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  #controls #cross div {
+    background-color: black;
+    width: 14%;
+    padding: 12%;
+    display: flex;
+    font-size: 2em;
+  }
+  #controls #cross #cross_l {
+    justify-content: start;
+    border: 0.1em solid black;
+  }
+  #controls #cross #cross_r {
+    justify-content: end;
+  }
+  #controls #cross #cross_d {
+    justify-content: center;
+    align-items: end;
+    padding: 7% 13%;
+  }
+
+  #controls #buttons {
+    display: flex;
+    width: 50%;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+
+  #controls #buttons div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(95, 14, 14);
+    width: 50%;
+    height: 4em;
+    border-radius: 25px;
+    text-align: center;
+    margin: 5% 0;
+  }
+
+  #controls #buttons #button_a {
+    margin-left: 25%;
+  }
+  #controls #buttons #button_b {
+    margin-right: 25%;
+  }
 }

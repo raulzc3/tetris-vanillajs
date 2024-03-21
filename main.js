@@ -1,19 +1,50 @@
-import {
-  BLOCK_SIZE,
-  BOARD_WIDTH,
-  BOARD_HEIGHT,
-  COLORS,
-  PIECES,
-} from "./constants";
+import { BOARD_WIDTH, BOARD_HEIGHT, COLORS, PIECES } from "./constants";
 
 const canvas = document.querySelector("canvas");
 const context = canvas.getContext("2d");
 const $current_score = document.querySelector("#current_score");
 const $top_score = document.querySelector("#top_score");
+const $level = document.querySelector("#level");
+const $lines_cleared = document.querySelector("#lines_cleared ");
 const $modal = document.querySelector("#modal");
+let repeatInterval;
+const $cross_l = document.querySelector("#cross_l");
+$cross_l.addEventListener("touchstart", () => {
+  moveLeft();
+  repeatInterval = setInterval(moveLeft, 80);
+});
+$cross_l.addEventListener("touchend", () => {
+  clearInterval(repeatInterval);
+});
+const $cross_d = document.querySelector("#cross_d");
+$cross_d.addEventListener("touchstart", () => {
+  moveDown(true);
+  repeatInterval = setInterval(moveDown, 80);
+});
+$cross_d.addEventListener("touchend", () => {
+  clearInterval(repeatInterval);
+});
+const $cross_r = document.querySelector("#cross_r");
+$cross_r.addEventListener("touchstart", () => {
+  moveRight();
+  repeatInterval = setInterval(moveRight, 80);
+});
+$cross_r.addEventListener("touchend", () => {
+  clearInterval(repeatInterval);
+});
+const $button_a = document.querySelector("#button_a");
+$button_a.addEventListener("touchstart", () => {
+  rotate();
+});
+const $button_b = document.querySelector("#button_b");
+$button_b.addEventListener("touchstart", () => {
+  instantDrop();
+});
 const $modal__title = document.querySelector("#modal__title");
 const $modal_button = document.querySelector("#modal__button");
 $modal_button.addEventListener("click", handleModalButtonClick);
+// Manage canvas size
+window.addEventListener("resize", setCanvasSize, true);
 $top_score.innerText = getTopScore();
 
 const board = Array(BOARD_HEIGHT)
@@ -23,13 +54,19 @@ const board = Array(BOARD_HEIGHT)
 const piece = { position: {} };
 let score = 0;
 let totalLinesCleared = 0;
-let level = 0;
+let level = 1;
 let gameRunning = false;
+let BLOCK_SIZE = window.screen.height / 35;
 
-//Define canvas size
-canvas.width = BLOCK_SIZE * BOARD_WIDTH;
-canvas.height = BLOCK_SIZE * BOARD_HEIGHT;
-context.scale(BLOCK_SIZE, BLOCK_SIZE);
+//Set canvas size based on screen height
+function setCanvasSize() {
+  BLOCK_SIZE = window.screen.height / 35;
+  canvas.width = BLOCK_SIZE * BOARD_WIDTH;
+  canvas.height = BLOCK_SIZE * BOARD_HEIGHT;
+  context.scale(BLOCK_SIZE, BLOCK_SIZE);
+}
+
+setCanvasSize();
 
 function manageModal({ title = "Welcome!", visible = true }) {
   $modal__title.innerHTML = title;
@@ -70,7 +107,7 @@ function moveDown(scoreMultiplier = 0) {
   if (!detectCollision({ newY: newY })) {
     piece.position.y = newY;
 
-    score = score + 1 * scoreMultiplier * (level + 1);
+    score = score + 1 * scoreMultiplier * level;
   } else {
     solidifyPiece();
     removeRows();
@@ -89,11 +126,7 @@ function removeRows() {
   let deletedRows = 0;
 
   board.forEach((row, y) => {
-    if (
-      row.every((value) => {
-        value > 0;
-      })
-    ) {
+    if (row.every((value) => value > 0)) {
       deletedRows++;
 
       board.splice(y, 1);
@@ -103,22 +136,24 @@ function removeRows() {
 
   switch (deletedRows) {
     case 1:
-      score += 40 * level + 1;
+      score += 40 * level;
       break;
     case 2:
-      score += 100 * level + 1;
+      score += 100 * level;
       break;
     case 3:
-      score += 300 * level + 1;
+      score += 300 * level;
       break;
     case 4:
-      score += 1200 * level + 1;
+      score += 1200 * level;
       break;
     default:
       break;
   }
   totalLinesCleared += deletedRows;
-  level = Math.floor(totalLinesCleared / 10);
+  level = Math.floor(totalLinesCleared / 10) + 1;
+  $level.innerHTML = level;
+  $lines_cleared.innerHTML = totalLinesCleared;
 }
 
 function detectCollision({ newY = false, newX = false, newShape = false }) {
@@ -171,7 +206,8 @@ function newGame(isFirstGame) {
   counter = 0;
   score = 0;
   totalLinesCleared = 0;
-  level = 0;
+  level = 1;
+  if (repeatInterval) clearInterval(repeatInterval);
   board.forEach((row) => row.fill(0));
   newPiece();
   gameRunning = true;
@@ -211,6 +247,10 @@ document.addEventListener("keydown", (e) => {
       rotate();
       break;
     case " ":
+      //Prevent accidental consecutive piece drops
+      if (e.repeat) {
+        return;
+      }
       instantDrop();
       break;
 
@@ -226,7 +266,18 @@ function update() {
   draw();
   counter++;
   $current_score.innerText = score;
-  if (counter === 100) {
+
+  const updatePoint =
+    level < 15
+      ? 100 - (level - 1) * 7
+      : level < 20
+      ? 8
+      : level < 25
+      ? 7
+      : level < 30
+      ? 6
+      : 5;
+  if (counter === updatePoint) {
     moveDown();
     counter = 0;
   }

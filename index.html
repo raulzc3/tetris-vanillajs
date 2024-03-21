@@ -39,11 +39,47 @@
       </canvas>
     </section>
     <section id="scoreboard">
-      <h1>Scoreboard</h1>
-      <h3>Top: <span id="top_score">0</span></h3>
-      <h3>Current: <span id="current_score">0</span></h3>
+      <div class="scoreboard_element">
+
+        <h3>Top: </h3>
+        <p id="top_score">0</p>
+      </div>
+      <div class="scoreboard_element">
+
+        <h3>Current: </h3>
+        <p id="current_score">0</p>
+      </div>
+      <div class="scoreboard_element">
+
+        <h3>Level: </h3>
+        <p id="level">1</p>
+      </div>
+      <div class="scoreboard_element">
+
+        <h3>Lines: </h3>
+        <p id="lines_cleared">0</p>
+      </div>
+    </section>
+
 
   </main>
+  <section id="controls">
+    <div id="cross">
+      <div id="cross_l">
+        ◀
+      </div>
+      <div id="cross_r">
+        ▶
+      </div>
+      <div id="cross_d">
+        ▼
+      </div>
+    </div>
+    <div id="buttons">
+      <div id="button_a">A</div>
+      <div id="button_b">B</div>
+    </div>
+  </section>
   <script type="module" src="/main.js"></script>
 </body>
 
