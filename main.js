@@ -43,6 +43,11 @@ $button_b.addEventListener("touchstart", () => {
 const $modal__title = document.querySelector("#modal__title");
 const $modal_button = document.querySelector("#modal__button");
 $modal_button.addEventListener("click", handleModalButtonClick);
+
+//iOS display fix
+document.addEventListener("gesturestart", function (e) {
+  e.preventDefault();
+});
 // Manage canvas size
 window.addEventListener("resize", setCanvasSize, true);
 $top_score.innerText = getTopScore();
