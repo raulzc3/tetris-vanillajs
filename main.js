@@ -84,6 +84,7 @@ function manageModal({
   visible = true,
   blink = false,
   buttonText = "New game",
+  buttonLoading = false,
   buttonAction = buttonNewGame,
 }) {
   $modal__title.innerHTML = title;
@@ -93,8 +94,10 @@ function manageModal({
     $modal__title.classList.remove("blink");
   }
 
-  $modal_button.innerHTML = buttonText;
-  $modal_button.onclick = buttonAction;
+  $modal_button.innerHTML = buttonLoading
+    ? '<div class="loader"/>'
+    : buttonText;
+  $modal_button.onclick = !buttonLoading && buttonAction;
   if (visible === true) {
     $modal.style.display = "flex";
   } else {
@@ -209,6 +212,7 @@ function solidifyPiece() {
 
 async function loadLeaderBoard(newScore) {
   if (remoteScores.length === 0) {
+    $scoreboard.innerHTML = '<tr ><td/><td><div class="loader"/></td</tr>';
     remoteScores = await getScores(10);
   }
 
@@ -216,6 +220,8 @@ async function loadLeaderBoard(newScore) {
   let saved = false;
   const scoreList =
     remoteScores?.reduce((result, scoreItem) => {
+      //Show only 10 scores
+      if (rank > 10) return result;
       if (!saved && newScore?.score > scoreItem.score) {
         let nameClass = "newHighscore blink";
         if (newScore.name.length > 3) {
@@ -247,17 +253,27 @@ async function loadLeaderBoard(newScore) {
 
   $scoreboard.innerHTML = scoreList.join("");
 }
-
+let saving = false;
 async function submitHighScore() {
-  const name = $input.value;
+  //Prevent saving same score multiple times
+  if (saving) {
+    return;
+  }
+  const name = $input.value?.trim();
   if (name.length > 0) {
+    manageModal({
+      visible: true,
+      title: "HIGH SCORE!",
+      blink: true,
+      buttonText: "New game",
+      buttonLoading: true,
+    });
     await saveScore({ name: name, score: score });
 
     await loadLeaderBoard({
       name: name,
       score: score,
     });
-
     remoteScores = [];
 
     manageModal({
@@ -273,6 +289,7 @@ async function submitHighScore() {
 
 async function gameOver() {
   gameRunning = false;
+  await loadLeaderBoard();
   let lowestScore = remoteScores[remoteScores.length - 1];
   if (score > lowestScore.score) {
     await loadLeaderBoard({
