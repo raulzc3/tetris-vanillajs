@@ -74,8 +74,13 @@ let gameRunning = false;
 let BLOCK_SIZE = window.screen.height / 35;
 let remoteScores = [];
 
-$pauseButton.onclick = () => {
+$pauseButton.onclick = togglePause;
+
+function togglePause() {
   const resume = () => {
+    manageModal({
+      visible: false,
+    });
     gameRunning = true;
     $pauseButton.innerHTML = "Pause";
     update();
@@ -90,14 +95,9 @@ $pauseButton.onclick = () => {
     });
     $pauseButton.innerHTML = "Resume";
   } else {
-    manageModal({
-      visible: false,
-    });
-    gameRunning = true;
-    $pauseButton.innerHTML = "Pause";
-    update();
+    resume();
   }
-};
+}
 
 //Set canvas size based on screen height
 function setCanvasSize() {
@@ -397,23 +397,37 @@ function rotate() {
 document.addEventListener("keydown", (e) => {
   switch (e.key) {
     case "ArrowLeft":
-      moveLeft();
+      if (gameRunning) {
+        moveLeft();
+      }
       break;
     case "ArrowRight":
-      moveRight();
+      if (gameRunning) {
+        moveRight();
+      }
       break;
     case "ArrowDown":
-      moveDown(true);
+      if (gameRunning) {
+        moveDown(true);
+      }
       break;
     case "ArrowUp":
-      rotate();
+      if (gameRunning) {
+        rotate();
+      }
       break;
     case " ":
       //Prevent accidental consecutive piece drops
-      if (e.repeat) {
-        return;
+      e.preventDefault();
+      if (gameRunning) {
+        if (e.repeat) {
+          return;
+        }
+        instantDrop();
       }
-      instantDrop();
+      break;
+    case "Escape":
+      togglePause();
       break;
 
     default:
