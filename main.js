@@ -407,7 +407,7 @@ function update() {
       : level < 30
       ? 6
       : 5;
-  if (counter === updatePoint) {
+  if (counter >= updatePoint) {
     moveDown();
     counter = 0;
   }
