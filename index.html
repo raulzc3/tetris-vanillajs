@@ -30,7 +30,7 @@
     <section id="game">
       <div id="modal">
         <h1 id="modal__title">Welcome!</h1>
-        <h4>Leaderboard</h4>
+        <h4 id="modal__subtitle">Leaderboard</h4>
         <div id="scoreboard_container">
           <table>
             <thead>
@@ -54,26 +54,33 @@
         Tu navegador no admite el elemento &lt;canvas&gt;.
       </canvas>
     </section>
-    <section id="scoreboard">
-      <div class="scoreboard_element">
+    <section id="right__panel">
+      <div id="scoreboard">
+        <div class="scoreboard_element">
 
-        <h3>My best: </h3>
-        <p id="top_score">0</p>
+          <h3>My best: </h3>
+          <p id="top_score">0</p>
+        </div>
+        <div class="scoreboard_element">
+
+          <h3>Current: </h3>
+          <p id="current_score">0</p>
+        </div>
+        <div class="scoreboard_element">
+
+          <h3>Level: </h3>
+          <p id="level">1</p>
+        </div>
+        <div class="scoreboard_element">
+
+          <h3>Lines: </h3>
+          <p id="lines_cleared">0</p>
+        </div>
       </div>
-      <div class="scoreboard_element">
+      <div id="extra__buttons">
 
-        <h3>Current: </h3>
-        <p id="current_score">0</p>
-      </div>
-      <div class="scoreboard_element">
-
-        <h3>Level: </h3>
-        <p id="level">1</p>
-      </div>
-      <div class="scoreboard_element">
-
-        <h3>Lines: </h3>
-        <p id="lines_cleared">0</p>
+        <button id="fullscreen__button">Full screen</button>
+        <button id="pause__button" disabled>Pause</button>
       </div>
     </section>
 

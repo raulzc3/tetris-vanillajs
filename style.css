@@ -37,7 +37,8 @@ body {
   overflow-y: hidden;
 }
 
-#controls {
+#controls,
+#fullscreen__button {
   display: none;
 }
 
@@ -58,6 +59,23 @@ section#game {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+#right__panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#extra__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+#extra__buttons button {
+  width: 100%;
+  height: 3em;
 }
 
 #modal__title {
@@ -122,6 +140,27 @@ canvas {
   background-color: black;
 }
 
+.loader {
+  border: 0.2em solid white; /* Light grey */
+  border-top: 0.2em solid rgb(88, 88, 88); /* Blue */
+  border-radius: 50%;
+  width: 1em;
+  height: 1em;
+  animation: spin 1s linear infinite;
+  margin: auto;
+  margin-top: 0.8em;
+  margin-bottom: 0.3em;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 @media only screen and (max-width: 600px) {
   :root {
     font-size: 0.8rem;
@@ -140,9 +179,10 @@ canvas {
     position: absolute;
     display: flex;
     flex-direction: column;
-    gap: 1em;
+    gap: 0.2em;
     padding: 4em 2em;
     font-size: 1.5em;
+    max-height: 100%;
   }
 
   section#game button {
@@ -197,11 +237,16 @@ canvas {
     font-weight: bold;
   }
 
+  #controls {
+    background-color: rgba(65, 65, 65, 0.288);
+  }
+
   #controls #buttons div {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgb(95, 14, 14);
+    background-color: rgb(155, 24, 24);
+    border: 3px solid #00000067;
     width: 50%;
     height: 4em;
     border-radius: 25px;
@@ -234,23 +279,9 @@ canvas {
     margin-top: 0.5em;
     padding: 1em;
   }
-}
 
-.loader {
-  border: 0.2em solid white; /* Light grey */
-  border-top: 0.2em solid rgb(88, 88, 88); /* Blue */
-  border-radius: 50%;
-  width: 1em;
-  height: 1em;
-  animation: spin 1s linear infinite;
-  margin: auto;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
+  #fullscreen__button {
+    margin-top: 100%;
+    display: block;
   }
 }

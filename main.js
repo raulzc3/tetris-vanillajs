@@ -1,6 +1,6 @@
 import { BOARD_WIDTH, BOARD_HEIGHT, COLORS, PIECES } from "./constants";
 import { getScores, saveScore } from "./http/scores";
-import { fullScreenMode, isMobile } from "./utils/deviceActions";
+import { fullScreenMode } from "./utils/deviceActions";
 
 const canvas = document.querySelector("canvas");
 const context = canvas.getContext("2d");
@@ -10,6 +10,10 @@ const $level = document.querySelector("#level");
 const $lines_cleared = document.querySelector("#lines_cleared ");
 const $modal = document.querySelector("#modal");
 const $scoreboard = document.querySelector("tbody");
+const $pauseButton = document.querySelector("#pause__button");
+const $fullScreenButton = document.querySelector("#fullscreen__button");
+$fullScreenButton.onclick = fullScreenMode;
+
 let $input = {};
 
 let repeatInterval;
@@ -69,6 +73,31 @@ let level = 1;
 let gameRunning = false;
 let BLOCK_SIZE = window.screen.height / 35;
 let remoteScores = [];
+
+$pauseButton.onclick = () => {
+  const resume = () => {
+    gameRunning = true;
+    $pauseButton.innerHTML = "Pause";
+    update();
+  };
+
+  if (gameRunning) {
+    gameRunning = false;
+    manageModal({
+      title: "Pause",
+      buttonAction: resume,
+      buttonText: "Resume game",
+    });
+    $pauseButton.innerHTML = "Resume";
+  } else {
+    manageModal({
+      visible: false,
+    });
+    gameRunning = true;
+    $pauseButton.innerHTML = "Pause";
+    update();
+  }
+};
 
 //Set canvas size based on screen height
 function setCanvasSize() {
@@ -290,6 +319,7 @@ async function submitHighScore() {
 
 async function gameOver() {
   gameRunning = false;
+  $pauseButton.disabled = true;
   await loadLeaderBoard();
   let lowestScore = remoteScores[remoteScores.length - 1];
   if (score > lowestScore.score) {
@@ -342,6 +372,7 @@ function newGame(isFirstGame) {
   board.forEach((row) => row.fill(0));
   newPiece();
   gameRunning = true;
+  $pauseButton.disabled = false;
   if (isFirstGame) {
     update();
   }
@@ -436,20 +467,6 @@ function draw() {
         context.fillRect(x + piece.position.x, y + piece.position.y, 1, 1);
       }
     });
-  });
-}
-
-console.log(isMobile());
-
-if (isMobile()) {
-  manageModal({
-    visible: true,
-    title: "Welcome!",
-    buttonText: "Enter full screen ",
-    buttonAction: () => {
-      fullScreenMode();
-      manageModal({});
-    },
   });
 }
 
