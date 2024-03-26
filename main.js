@@ -1,5 +1,6 @@
 import { BOARD_WIDTH, BOARD_HEIGHT, COLORS, PIECES } from "./constants";
 import { getScores, saveScore } from "./http/scores";
+import { fullScreenMode, isMobile } from "./utils/deviceActions";
 
 const canvas = document.querySelector("canvas");
 const context = canvas.getContext("2d");
@@ -438,4 +439,18 @@ function draw() {
   });
 }
 
-loadLeaderBoard();
+console.log(isMobile());
+
+if (isMobile()) {
+  manageModal({
+    visible: true,
+    title: "Welcome!",
+    buttonText: "Enter full screen ",
+    buttonAction: () => {
+      fullScreenMode();
+      manageModal({});
+    },
+  });
+}
+
+await loadLeaderBoard();
