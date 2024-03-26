@@ -1,4 +1,4 @@
-const apiUrl = "http://localhost:3000";
+const apiUrl = "http://multibackends.duckdns.org:5005";
 
 /**
  * Fetch data from api

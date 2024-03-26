@@ -214,35 +214,36 @@ async function loadLeaderBoard(newScore) {
 
   let rank = 1;
   let saved = false;
-  const scoreList = remoteScores.reduce((result, scoreItem) => {
-    if (!saved && newScore?.score > scoreItem.score) {
-      let nameClass = "newHighscore blink";
-      if (newScore.name.length > 3) {
-        nameClass = "";
-      }
+  const scoreList =
+    remoteScores?.reduce((result, scoreItem) => {
+      if (!saved && newScore?.score > scoreItem.score) {
+        let nameClass = "newHighscore blink";
+        if (newScore.name.length > 3) {
+          nameClass = "";
+        }
 
-      result.push(
-        `<tr>
+        result.push(
+          `<tr>
       <td  class="newHighscore blink">${rank}</td>
       <td class="${nameClass}">${newScore.name}</td>
       <td  class="newHighscore blink">${newScore.score}</td>
     </tr>`
-      );
-      saved = true;
+        );
+        saved = true;
 
-      rank++;
-    }
-    result.push(
-      `<tr>
+        rank++;
+      }
+      result.push(
+        `<tr>
     <td>${rank}</td>
     <td>${scoreItem.name}</td>
     <td>${scoreItem.score}</td>
   </tr>`
-    );
-    rank++;
+      );
+      rank++;
 
-    return result;
-  }, []);
+      return result;
+    }, []) || [];
 
   $scoreboard.innerHTML = scoreList.join("");
 }
@@ -256,6 +257,8 @@ async function submitHighScore() {
       name: name,
       score: score,
     });
+
+    remoteScores = [];
 
     manageModal({
       visible: true,
