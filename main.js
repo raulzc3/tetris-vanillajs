@@ -453,4 +453,4 @@ if (isMobile()) {
   });
 }
 
-await loadLeaderBoard();
+loadLeaderBoard();
