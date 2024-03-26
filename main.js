@@ -1,4 +1,5 @@
 import { BOARD_WIDTH, BOARD_HEIGHT, COLORS, PIECES } from "./constants";
+import { getScores, saveScore } from "./http/scores";
 
 const canvas = document.querySelector("canvas");
 const context = canvas.getContext("2d");
@@ -7,6 +8,9 @@ const $top_score = document.querySelector("#top_score");
 const $level = document.querySelector("#level");
 const $lines_cleared = document.querySelector("#lines_cleared ");
 const $modal = document.querySelector("#modal");
+const $scoreboard = document.querySelector("tbody");
+let $input = {};
+
 let repeatInterval;
 const $cross_l = document.querySelector("#cross_l");
 $cross_l.addEventListener("touchstart", () => {
@@ -42,12 +46,13 @@ $button_b.addEventListener("touchstart", () => {
 });
 const $modal__title = document.querySelector("#modal__title");
 const $modal_button = document.querySelector("#modal__button");
-$modal_button.addEventListener("click", handleModalButtonClick);
+$modal_button.onclick = buttonNewGame;
 
 //iOS display fix
 document.addEventListener("gesturestart", function (e) {
   e.preventDefault();
 });
+
 // Manage canvas size
 window.addEventListener("resize", setCanvasSize, true);
 $top_score.innerText = getTopScore();
@@ -62,6 +67,7 @@ let totalLinesCleared = 0;
 let level = 1;
 let gameRunning = false;
 let BLOCK_SIZE = window.screen.height / 35;
+let remoteScores = [];
 
 //Set canvas size based on screen height
 function setCanvasSize() {
@@ -73,8 +79,22 @@ function setCanvasSize() {
 
 setCanvasSize();
 
-function manageModal({ title = "Welcome!", visible = true }) {
+function manageModal({
+  title = "Welcome!",
+  visible = true,
+  blink = false,
+  buttonText = "New game",
+  buttonAction = buttonNewGame,
+}) {
   $modal__title.innerHTML = title;
+  if (blink) {
+    $modal__title.classList.add("blink");
+  } else {
+    $modal__title.classList.remove("blink");
+  }
+
+  $modal_button.innerHTML = buttonText;
+  $modal_button.onclick = buttonAction;
   if (visible === true) {
     $modal.style.display = "flex";
   } else {
@@ -82,7 +102,7 @@ function manageModal({ title = "Welcome!", visible = true }) {
   }
 }
 
-function handleModalButtonClick() {
+function buttonNewGame() {
   manageModal({ visible: false });
   newGame(true);
 }
@@ -187,14 +207,99 @@ function solidifyPiece() {
   newPiece();
 }
 
+async function loadLeaderBoard(newScore) {
+  if (remoteScores.length === 0) {
+    remoteScores = await getScores(10);
+  }
+
+  let rank = 1;
+  let saved = false;
+  const scoreList = remoteScores.reduce((result, scoreItem) => {
+    if (!saved && newScore?.score > scoreItem.score) {
+      let nameClass = "newHighscore blink";
+      if (newScore.name.length > 3) {
+        nameClass = "";
+      }
+
+      result.push(
+        `<tr>
+      <td  class="newHighscore blink">${rank}</td>
+      <td class="${nameClass}">${newScore.name}</td>
+      <td  class="newHighscore blink">${newScore.score}</td>
+    </tr>`
+      );
+      saved = true;
+
+      rank++;
+    }
+    result.push(
+      `<tr>
+    <td>${rank}</td>
+    <td>${scoreItem.name}</td>
+    <td>${scoreItem.score}</td>
+  </tr>`
+    );
+    rank++;
+
+    return result;
+  }, []);
+
+  $scoreboard.innerHTML = scoreList.join("");
+}
+
+async function submitHighScore() {
+  const name = $input.value;
+  if (name.length > 0) {
+    await saveScore({ name: name, score: score });
+
+    await loadLeaderBoard({
+      name: name,
+      score: score,
+    });
+
+    manageModal({
+      visible: true,
+      title: "HIGH SCORE!",
+      blink: true,
+      buttonText: "New game",
+    });
+  } else {
+    alert("We need a name to show your new high score!");
+  }
+}
+
+async function gameOver() {
+  gameRunning = false;
+  let lowestScore = remoteScores[remoteScores.length - 1];
+  if (score > lowestScore.score) {
+    await loadLeaderBoard({
+      name: "<input type='text' id='newName' name='newName' maxlength='3' oninput='this.value = this.value.toUpperCase()' />",
+      score: score,
+    });
+    $input = document.querySelector("#newName");
+    $input.focus();
+
+    manageModal({
+      visible: true,
+      title: "HIGH SCORE!",
+      blink: true,
+      buttonText: "Submit score",
+      buttonAction: submitHighScore,
+    });
+  } else {
+    await loadLeaderBoard();
+    manageModal({ visible: true, title: "Game over" });
+  }
+  // await saveScore({ name: "RUL", score: score });
+}
+
 function newPiece() {
   //TODO: next piece section
   const newShape = PIECES[Math.floor(Math.random() * 7)];
   const newX = Math.ceil(BOARD_WIDTH / 2 - newShape[0].length / 2);
   const newY = 0;
   if (detectCollision({ newShape, newX, newY })) {
-    gameRunning = false;
-    manageModal({ visible: true, title: "Game over" });
+    gameOver();
   } else {
     piece.position.x = newX;
     piece.position.y = newY;
@@ -312,3 +417,5 @@ function draw() {
     });
   });
 }
+
+loadLeaderBoard();
