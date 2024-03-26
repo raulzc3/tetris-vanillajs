@@ -1,0 +1,13 @@
+{
+  "short_name": "Tetri.js",
+  "name": "Tetri.js",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "./public/icon.png",
+      "type": "image/png"
+    }
+  ]
+}
